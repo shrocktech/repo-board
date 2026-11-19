@@ -1,0 +1,9 @@
+{
+  "name": "repo-board",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A drag-and-drop board of your GitHub repositories with local notes, stages, tags and priority order.",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": { "start": "node server.mjs", "test": "node test.mjs" }
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GitHub Repos</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/board.css">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('repo-board-theme')||'dark'}catch{}</script>
+<script type="module" src="/board.js"></script>
+</head>
+<body>
+<main>
+ <div class="toolbar">
+  <div class="title"><span class="page-mark" aria-hidden="true"></span><div><h1>GitHub Repos</h1><p>Your projects, in priority order.</p></div></div>
+  <label class="repo-search"><span class="sr-only">Find repository</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><input id="search" class="input" type="search" placeholder="Search repositories…" autocomplete="off"></label>
+  <div class="gh-bar">
+   <span id="gh-account" class="gh-account"><svg class="gh-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.09c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.29-5.12-1.25-5.12-5.54 0-1.22.44-2.22 1.15-3-.11-.29-.5-1.42.11-2.96 0 0 .94-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.54.22 2.67.11 2.96.71.78 1.15 1.78 1.15 3 0 4.3-2.62 5.25-5.13 5.53.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg><span id="gh-name">Checking GitHub…</span></span>
+   <button id="refresh" class="btn board-only">Sync GitHub</button>
+   <button id="choose" class="btn btn-primary board-only">Select repositories</button>
+   <button id="theme" class="btn btn-icon" aria-label="Switch light or dark" title="Switch light or dark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+  </div>
+ </div>
+ <section id="gh-empty" class="gh-empty" hidden><div class="gh-hero">
+  <span class="gh-mark"><svg class="gh-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.09c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.73 1.16 1.73 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.5-.29-5.12-1.25-5.12-5.54 0-1.22.44-2.22 1.15-3-.11-.29-.5-1.42.11-2.96 0 0 .94-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.54.22 2.67.11 2.96.71.78 1.15 1.78 1.15 3 0 4.3-2.62 5.25-5.13 5.53.4.35.76 1.03.76 2.08v3.1c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></span>
+  <h2>Connect GitHub to get started</h2>
+  <p>Start the server with a <code>GITHUB_TOKEN</code> (read access to your repositories), or sign in once with <code>gh auth login</code>. Then sync.</p>
+  <p id="gh-error" class="gh-small"></p>
+  <button id="retry" class="btn btn-primary">Check again</button>
+ </div></section>
+ <p id="message" role="status" aria-live="polite">Loading repositories…</p>
+ <div id="board" aria-label="GitHub repository board"></div>
+ <p class="hint board-only">Top card is highest priority. Drag between columns or before another card. Open a card for notes, tags and keyboard-friendly move controls. Everything you add is saved on this server; GitHub is never changed.</p>
+</main>
+
+<dialog id="detail" aria-labelledby="title"><button type="button" class="dialog-x" id="close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+ <form id="card-form">
+  <div class="dialog-head"><button type="button" id="edit-avatar" class="avatar-edit" aria-label="Change repository avatar" aria-expanded="false" aria-controls="avatar-picker"></button>
+   <div class="repo-intro"><h2 id="title"></h2><p id="description"></p><a id="github" target="_blank" rel="noopener noreferrer">Open GitHub repository ↗</a></div></div>
+  <div id="avatar-picker" hidden><strong>Choose an avatar</strong><div class="avatar-grid"></div><button type="button" class="btn" id="upload">Upload image</button><input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden></div>
+  <label>Stage<select id="stage" class="input"></select></label>
+  <fieldset id="repo-labels"><legend>Status tags</legend></fieldset>
+  <label>Notes<textarea id="notes" class="input" rows="5" maxlength="20000" placeholder="Next steps, decisions, blockers…"></textarea></label>
+  <div class="actions"><button type="button" class="btn" id="up">Move up</button><button type="button" class="btn" id="down">Move down</button><button type="button" class="btn" id="archive">Archive</button><button type="submit" class="btn btn-primary">Save changes</button></div>
+  <p id="detail-message" role="status"></p>
+ </form>
+</dialog>
+
+<dialog id="selection" aria-labelledby="selection-title"><button type="button" class="dialog-x" id="cancel-selection" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+ <form id="selection-form"><h2 id="selection-title">Select repositories</h2><p class="gh-small">Hidden cards keep their notes and position. Archiving here never changes GitHub.</p>
+  <label class="select-all"><input type="checkbox" id="all"> Select all</label><div id="choices"></div>
+  <div class="actions"><button type="submit" class="btn btn-primary">Save selection</button></div><p id="selection-message" role="status"></p></form>
+</dialog>
+</body>
+</html>
